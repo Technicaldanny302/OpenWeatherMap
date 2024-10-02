@@ -1,5 +1,8 @@
-﻿using System.Text.Json.Nodes;
-using static System.Net.WebRequestMethods;
+﻿using Newtonsoft.Json.Linq;
+using System;
+using System.IO;
+using OpenWeatherMap;
+using System.Diagnostics.Metrics;
 
 namespace OpenWeatherMap
 {
@@ -7,16 +10,18 @@ namespace OpenWeatherMap
     {
         static void Main(string[] args)
         {
-            var client = new HttpClient();
+            string key = File.ReadAllText("appsettings.json");
+            string APIKey = JObject.Parse(key).GetValue("APIKey").ToString();
 
-            var key = "cb6ec932ee52a1172b1432786c0245d4\r\n";
-            var city = "Birmingham";
+            Console.WriteLine("Please enter your zipcode");
+            var  CityName = Console.ReadLine();
 
-            var weatherURL = $"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API key}";
-            var response = client.GetAsync(weatherURL).Result;
+            var apiCall = $"https://api.openweathermap.org/data/2.5/weather?q={CityName}&appid={APIKey}&units=imperial";
 
-            JsonObject formattedResponse = JsonObject.Parse(response);
+            Console.WriteLine();
 
+            Console.WriteLine($"It is currently {WeatherMap.GetTemp(apiCall)} degrees F in your location");
+           
         }
     }
 }
